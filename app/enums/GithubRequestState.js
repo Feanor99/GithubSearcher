@@ -1,8 +1,8 @@
 const GithubRequestState = {
     failed: -1,
-    none: 0,
-    loading: 1,
-    success: 2
+    none: 1,
+    loading: 2,
+    success: 3
 }
 
 export default GithubRequestState
