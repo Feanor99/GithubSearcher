@@ -3,7 +3,7 @@ import colors from './colors';
 
 const styles = StyleSheet.create({
     title: {
-        marginTop: StatusBar.currentHeight,
+        marginTop: StatusBar.currentHeight + 8,
         textAlign: "center",
         fontSize: 24,
         fontWeight: "bold"
@@ -60,6 +60,22 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         backgroundColor: 'white'
     },
+
+    paragraph_card: {
+        flex: 1,
+        margin: 10,
+        padding: 8,
+        elevation: 4,
+        borderRadius: 8,
+        backgroundColor: 'white'
+    },
+
+    tinyLogo: {
+        alignSelf: 'center',
+        width: 24,
+        height: 24,
+        marginEnd: 16,
+      },
 });
 
 export default styles

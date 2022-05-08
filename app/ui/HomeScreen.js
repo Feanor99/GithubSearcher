@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { SectionList, Text, TextInput, View, ActivityIndicator, Alert } from 'react-native';
+import { SectionList, Text, TextInput, View, ActivityIndicator, Alert, Image } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import CategoryType from '../enums/CategoryType';
 import GithubRequestState from '../enums/GithubRequestState';
@@ -9,12 +9,12 @@ import GithubRepository from '../repository/GithubRepository';
 import colors from '../res/colors';
 import styles from '../res/styles';
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
 
     const githubRepository = new GithubRepository()
     const [searchText, onChangesearchText] = useState(null);
     const [requestState, setRequestState] = useState(GithubRequestState.none);
-    const [users, setUsers] = useState([]);
+    const [users, setUsers] = useState(null);
     const [repositories, setRepositories] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -138,7 +138,7 @@ export default function HomeScreen() {
 
             </View>
             <View style={styles.container_list} state={requestState}>
-                <ResponseDataListView users={users} repositories={repositories} isLoading={isLoading} />
+                <ResponseDataListView users={users} repositories={repositories} isLoading={isLoading} navigation={navigation} />
             </View>
         </View>
     );
@@ -149,9 +149,14 @@ const ResponseDataListView = (props) => {
         return <ActivityIndicator style={{ alignSelf: 'center' }} size="large" color={colors.primary} />
     }
 
-    if (props.users.length === 0 && props.repositories.length === 0) {
-        return <Text style={{ alignSelf: 'center' }}>Nothing found</Text>
+    if (props.users) {
+        if (props.users.length === 0 && props.repositories.length === 0) {
+            return <Text style={{ alignSelf: 'center' }}>Nothing found</Text>
+        }
+    } else {
+        return null
     }
+
 
     return <SectionList
         sections={[
@@ -160,13 +165,18 @@ const ResponseDataListView = (props) => {
         ]}
         renderItem={({ item }) => {
             return <View style={styles.item_row}>
+                <LoadImage avatar_url={item.data.avatar_url} />
+
                 <Text style={styles.item}>{item.name}</Text>
 
                 <IconButton style={{ alignSelf: "flex-end", marginVertical: 0 }}
                     icon="arrow-right"
                     color={colors.primary}
                     size={28}
-                    onPress={() => console.log("test click")}
+                    onPress={() => props.navigation.navigate('Detail', {
+                        name: item.name,
+                        data: item.data,
+                    })}
                 />
 
             </View>
@@ -176,4 +186,17 @@ const ResponseDataListView = (props) => {
         keyExtractor={(item, index) => index}
         initialNumToRender={10}
     />
+}
+
+const LoadImage = (props) => {
+    if (props.avatar_url) {
+        return <Image
+            style={styles.tinyLogo}
+            source={{
+                uri: props.avatar_url,
+            }}
+        />
+    } else {
+        return null
+    }
 }
